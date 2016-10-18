@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using SampleApi.WebApp.Models;
@@ -9,18 +8,16 @@ namespace SampleApi.WebApp.Controllers
     [Route("api/people")]
     public class PeopleController : Controller
     {
-        private ICollection<Person> _people = new List<Person>();
-
         [HttpGet]
         public IActionResult Get()
         {
-            return Json(_people.ToList());
+            return Json(PeopleRepository.People.ToList());
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
-            var person = _people.FirstOrDefault(x => x.Id == id);
+            var person = PeopleRepository.People.FirstOrDefault(x => x.Id == id);
             if (person == null)
             {
                 return NotFound($"Person with id {id} was not found");
@@ -38,7 +35,7 @@ namespace SampleApi.WebApp.Controllers
             }
 
             person.Id = Guid.NewGuid();
-            _people.Add(person);
+            PeopleRepository.People.Add(person);
 
             return Ok(person);
         }
@@ -51,16 +48,16 @@ namespace SampleApi.WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var person = _people.FirstOrDefault(x => x.Id == id);
+            var person = PeopleRepository.People.FirstOrDefault(x => x.Id == id);
             if (person == null)
             {
                 return NotFound();
             }
 
-            _people.Remove(person);
+            PeopleRepository.People.Remove(person);
 
             updated.Id = id;
-            _people.Add(updated);
+            PeopleRepository.People.Add(updated);
 
             return Ok(updated);
         }
@@ -68,13 +65,13 @@ namespace SampleApi.WebApp.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
-            var person = _people.FirstOrDefault(x => x.Id == id);
+            var person = PeopleRepository.People.FirstOrDefault(x => x.Id == id);
             if (person == null)
             {
                 return NotFound();
             }
 
-            _people.Remove(person);
+            PeopleRepository.People.Remove(person);
 
             return Ok();
         }
